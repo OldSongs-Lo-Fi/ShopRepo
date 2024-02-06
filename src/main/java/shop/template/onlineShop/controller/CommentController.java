@@ -2,6 +2,7 @@ package shop.template.onlineShop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +27,9 @@ public class CommentController {
     @Autowired
     CommentService commentService;
 
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/")
     public void createComment(@AuthenticationPrincipal User user, @RequestBody CommentPostDTO commentPostDTO){
         System.out.println(user.getUsername());
@@ -33,11 +37,14 @@ public class CommentController {
         commentService.createComment(user, commentPostDTO);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/{commentId}")
     public void updateComment(@AuthenticationPrincipal User user, @RequestBody CommentPutDTO commentPutDTO, @PathVariable("commentId") Long id){
         commentService.updateComment(user, id, commentPutDTO);
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/user")
     public ResponseEntity<Page<CommentGetDTO>> getUserComments(@AuthenticationPrincipal User user, @RequestParam("page") int page){
         return ResponseEntity.status(200)
@@ -47,11 +54,16 @@ public class CommentController {
                 );
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @DeleteMapping("/{commentId}")
     public void deleteComment(@PathVariable("commentId") Long commentId){
         commentService.deleteCommentById(commentId);
 
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('CUSTOMER')")
     @DeleteMapping("/user/{commentId}")
     public void deleteUserComment(@PathVariable("commentId") Long commentId, @AuthenticationPrincipal User user){
         commentService.deleteCommentById(user, commentId);
