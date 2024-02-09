@@ -39,6 +39,7 @@ public class UserController {
     @PreAuthorize("permitAll()")
     @PostMapping("/sendConfirmationMessage")
     public void sendConfirmationMessage(@RequestBody UserPostDTO userPostDTO){
+
         userService.sendConfirmationMessage(userPostDTO);
     }
 
