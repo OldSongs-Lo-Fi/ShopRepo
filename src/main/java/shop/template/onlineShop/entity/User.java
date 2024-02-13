@@ -23,8 +23,15 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @Column(columnDefinition = "VARCHAR(256)",
+    nullable = false,
+    unique = true)
     String email;
+    @Column(columnDefinition = "VARCHAR(50)",
+            nullable = false,
+            unique = true)
     String username;
+    @Column(nullable = false)
     String password;
 
     @OneToMany(mappedBy = "author",
@@ -37,8 +44,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     Set<Order> orders;
 
+    @Column(nullable = false)
     Country country;
+    @Column(nullable = false)
     String address;
+    @Column(nullable = false)
     String phoneNumber;
 
     boolean isEnabled = true;

@@ -48,6 +48,9 @@ public class UserService {
         String key = UUID.randomUUID().toString();
         key += "_" + new Date().getTime();
         nonActivatedUsers.put(key, userPostDTO);
+
+        System.out.println(key);
+
         mailService.sendEmail(String.format(
                 "This is your activation code: %s/users/confirmEmail?key=%s %nLink is valid for only 5 minutes!", link, key
         ), userPostDTO.getEmail(), "Activation Code!");
@@ -61,6 +64,7 @@ public class UserService {
 
     public void confirmEmail(String key){
         UserPostDTO user = nonActivatedUsers.get(key);
+        System.out.println(key);
         if(user == null){
             throw new RuntimeException("Confirmation Code is invalid!");
         }
